@@ -3,6 +3,12 @@ val verName = "3.2.1"
 
 val javaVersion = JavaVersion.VERSION_21
 
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+}
+
 android {
     namespace = "com.chrxw.purenga"
     compileSdk = 36
@@ -53,11 +59,6 @@ java {
     }
 }
 
-plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
-}
 
 dependencies {
     implementation(libs.ezxhelper)
