@@ -47,7 +47,6 @@ class OptimizeHook : IHook {
         private lateinit var clsCommentDialog: Class<*>
         lateinit var clsMainActivity: Class<*>
         private lateinit var clsArticleDetailActivity: Class<*>
-        lateinit var clsHomeFragment: Class<*>
         private lateinit var clsCalendarUtils: Class<*>
         private lateinit var clsAssetManager: Class<*>
         private lateinit var clsAboutUsActivityA: Class<*>
@@ -83,7 +82,6 @@ class OptimizeHook : IHook {
         clsMainActivity = classLoader.loadClass("com.donews.nga.activitys.MainActivity")
         clsArticleDetailActivity =
             classLoader.loadClass("gov.pianzong.androidnga.activity.forumdetail.ArticleDetailActivity")
-        clsHomeFragment = classLoader.loadClass("com.donews.nga.fragments.HomeFragment")
 
         try {
             clsCalendarUtils = classLoader.loadClass("gov.pianzong.androidnga.utils.CalendarUtils")
@@ -220,7 +218,7 @@ class OptimizeHook : IHook {
 
         //长按打开签到
         if (Helper.getSpBool(Constant.QUICK_SIGN_IN, false)) {
-            MethodFinder.fromClass(clsHomeFragment).filterByName("initLayout").firstOrNull()?.createHook {
+            MethodFinder.fromClass(AdHook. clsHomeFragment).filterByName("initLayout").firstOrNull()?.createHook {
                 after {
                     it.log()
 
@@ -355,12 +353,12 @@ class OptimizeHook : IHook {
 
         // 自动签到
         if (Helper.getSpBool(Constant.AUTO_SIGN, false)) {
-            val mtdCheckLogin = clsHomeFragment.getDeclaredMethod("checkLogin", Boolean::class.java)
+            val mtdCheckLogin = AdHook.clsHomeFragment.getDeclaredMethod("checkLogin", Boolean::class.java)
             mtdCheckLogin.isAccessible = true
 
             var firstClick = true
 
-            findFirstMethodByName(clsHomeFragment, "updateSingStatus")?.createHook {
+            findFirstMethodByName(AdHook.clsHomeFragment, "updateSingStatus")?.createHook {
                 after {
                     it.log()
 
@@ -372,7 +370,7 @@ class OptimizeHook : IHook {
                         firstClick = false
                         try {
                             Helper.toast("自动签到, 打开签到页面")
-                            val mtdGetContext = clsHomeFragment.getMethod("getContext")
+                            val mtdGetContext = AdHook.clsHomeFragment.getMethod("getContext")
                             val context = mtdGetContext.invoke(it.thisObject)
                             val mtdShowLoginWebView =
                                 clsLoginWebView.getMethod("show", Context::class.java, Int::class.java)

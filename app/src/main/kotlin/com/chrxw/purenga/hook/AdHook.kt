@@ -47,6 +47,7 @@ class AdHook : IHook {
         private lateinit var fldGameRecommendBindings: List<Field>
         private lateinit var clsGameRecommendBinder: Class<*>
         private var fldBannerHolderViewC: Field? = null
+        lateinit var clsHomeFragment: Class<*>
 
         fun isClsZkAdNativeImplInit() = ::clsZkAdNativeImpl.isInitialized
         fun isClsKsAdSDKInit() = ::clsKsAdSDK.isInitialized
@@ -82,6 +83,7 @@ class AdHook : IHook {
         clsSubject = classLoader.loadClass("gov.pianzong.androidnga.model.Subject")
         clsBaseActivity = classLoader.loadClass("com.donews.nga.common.base.BaseActivity")
         clsBannerHolder = classLoader.loadClass("com.donews.nga.adapters.HomeRecommendAdapter\$BannerHolder")
+        clsHomeFragment = classLoader.loadClass("com.donews.nga.fragments.HomeFragment")
         fldViewBinding = FieldFinder.fromClass(clsBaseActivity).filterByName("viewBinding").first()
 
         try {
@@ -373,22 +375,19 @@ class AdHook : IHook {
         }
 
         if (Helper.getSpBool(Constant.PURE_VIDEO, false)) {
-            MethodFinder.fromClass(OptimizeHook.clsHomeFragment).filterByName("updateTabs")
+            MethodFinder.fromClass(clsHomeFragment).filterByName("updateTabs")
                 .firstOrNull()?.createHook {
                     before {
                         it.log()
 
-                        val newList = ArrayList<Any>()
-
                         val list = it.args[0] as ArrayList<*>
-                        for (ele in list) {
-                            val name = XposedHelpers.getObjectField(ele, "name") as String
-                            if (name != "短剧") {
-                                newList.add(ele!!)
+                        for (i in list.size - 1 downTo 0) {
+                            val ele = list[i] ?: continue
+                            val name = XposedHelpers.getObjectField(ele, "name") as? String ?: continue
+                            if (name == "短剧") {
+                                list.removeAt(i)
                             }
                         }
-
-                        it.args[0] = newList
                     }
                 }
         }
