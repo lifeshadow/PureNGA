@@ -1,12 +1,10 @@
-val verCode = 54
-val verName = "3.2.2"
+val verCode = 55
+val verName = "3.3.0"
 
 val javaVersion = JavaVersion.VERSION_21
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -15,6 +13,7 @@ android {
 
     buildFeatures {
         buildConfig = true
+        resValues = true
     }
 
     defaultConfig {

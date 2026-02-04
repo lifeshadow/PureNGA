@@ -11,11 +11,18 @@ import com.chrxw.purenga.utils.ExtensionUtils.findFirstMethodByName
 import com.chrxw.purenga.utils.ExtensionUtils.log
 import com.chrxw.purenga.utils.Helper
 import com.github.kyuubiran.ezxhelper.HookFactory.`-Static`.createHook
+import com.github.kyuubiran.ezxhelper.finders.MethodFinder
 import de.robv.android.xposed.XposedHelpers
 
 
 class DebugHook : IHook {
     override fun init(classLoader: ClassLoader) {
+        MethodFinder.fromClass("com.donews.nga.entity.HomeTabParam", classLoader).filterByName("isFullscreen")
+            .firstOrNull()?.createHook {
+                after {
+                    it.result = false
+                }
+            }
 
     }
 

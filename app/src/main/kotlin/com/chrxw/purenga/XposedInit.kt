@@ -93,7 +93,7 @@ class XposedInit : IXposedHookLoadPackage, IXposedHookZygoteInit {
                                         Helper.toast(
                                             buildString {
                                                 appendLine("PureNGA 加载成功")
-                                                appendLine("如果不想显示此信息请打开【静默运行】开关")
+                                                appendLine("【可以在设置中禁用】")
                                             }, Toast.LENGTH_LONG
                                         )
                                     }

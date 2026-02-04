@@ -371,6 +371,29 @@ class AdHook : IHook {
                 }
             }
         }
+
+        if (Helper.getSpBool(Constant.PURE_VIDEO, false)) {
+            MethodFinder.fromClass(OptimizeHook.clsHomeFragment).filterByName("updateTabs")
+                .firstOrNull()?.createHook {
+                    before {
+                        it.log()
+
+                        val newList = ArrayList<Any>()
+
+                        val list = it.args[0] as ArrayList<*>
+                        for (ele in list) {
+                            val name = XposedHelpers.getObjectField(ele, "name") as String
+                            if (name != "短剧") {
+                                newList.add(ele!!)
+                            }
+                        }
+
+                        it.args[0] = newList
+                    }
+                }
+        }
+
+
     }
 
     override var name = "AdHook"

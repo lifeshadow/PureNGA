@@ -439,6 +439,9 @@ object DialogUtils {
             ToggleItemView(activity, Constant.PURE_POPUP_AD, "屏蔽首页广告", "去除首页浮窗广告")
         )
         container.addView(
+            ToggleItemView(activity, Constant.PURE_VIDEO, "屏蔽短剧", "去除首页短剧TAB")
+        )
+        container.addView(
             ClickableItemView(activity, "自定义屏蔽帖子", "按照关键词过滤帖子列表").apply {
                 setOnClickListener {
                     onSetThreadFilter(activity)
@@ -591,8 +594,7 @@ object DialogUtils {
             })
         container.addView(
             ClickableItemView(activity, "获取最新发行版", "").apply {
-                val sunType = if (Helper.isBundled()) "整合版" else "插件版"
-                subTitle = "插件类型: $sunType"
+                subTitle = if (Helper.isBundled()) "下载最新整合版" else "下载最新独立插件"
                 setOnClickListener {
                     popupGotoReleasePage(activity)
                 }
@@ -1119,5 +1121,21 @@ object DialogUtils {
             create()
             show()
         }
+    }
+
+    fun popupErrorDialog(context: Context,error: Int) {
+        AlertDialog.Builder(context)
+            .setTitle("PureNGA 加载失败")
+            .setMessage(
+                buildString {
+                    appendLine("$error 个模块加载失败")
+                    appendLine("可能不支持当前版本")
+                    appendLine()
+                    appendLine("NGA 版本: ${Helper.getNgaVersion()}")
+                    appendLine("插件版本: ${BuildConfig.VERSION_NAME}")
+                }
+            )
+            .setPositiveButton("确定", null)
+            .show()
     }
 }
