@@ -29,6 +29,24 @@ android {
         proguardFiles
     }
 
+    signingConfigs {
+        create("release") {
+            val keystoreFile = System.getenv("KEYSTORE_FILE")
+            if (!keystoreFile.isNullOrEmpty()) {
+                val password = System.getenv("KEYSTORE_PASSWORD")
+                val alias = System.getenv("KEY_ALIAS")
+                val keyPass = System.getenv("KEY_PASSWORD")
+                require(!password.isNullOrEmpty()) { "KEYSTORE_PASSWORD must be set when KEYSTORE_FILE is specified" }
+                require(!alias.isNullOrEmpty()) { "KEY_ALIAS must be set when KEYSTORE_FILE is specified" }
+                require(!keyPass.isNullOrEmpty()) { "KEY_PASSWORD must be set when KEYSTORE_FILE is specified" }
+                storeFile = file(keystoreFile)
+                storePassword = password
+                keyAlias = alias
+                keyPassword = keyPass
+            }
+        }
+    }
+
     buildTypes {
         release {
             isShrinkResources = true
@@ -36,7 +54,9 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName(
+                if (System.getenv("KEYSTORE_FILE").isNullOrEmpty()) "debug" else "release"
+            )
         }
     }
 
